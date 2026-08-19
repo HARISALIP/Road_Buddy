@@ -43,8 +43,8 @@ interface UniversalFormProps {
 }
 
 const TYPE_OPTIONS: { id: TransactionType; label: string; icon: React.ElementType; color: string }[] = [
-  { id: 'expense', label: 'Expense', icon: TrendingDown, color: 'bg-red-50 text-red-600 border-red-200' },
   { id: 'income', label: 'Income', icon: TrendingUp, color: 'bg-emerald-50 text-emerald-600 border-emerald-200' },
+  { id: 'expense', label: 'Expense', icon: TrendingDown, color: 'bg-red-50 text-red-600 border-red-200' },
   { id: 'investment', label: 'Investment', icon: Briefcase, color: 'bg-blue-50 text-blue-600 border-blue-200' },
   { id: 'withdrawal', label: 'Withdrawal', icon: Layers, color: 'bg-amber-50 text-amber-600 border-amber-200' },
   { id: 'dividend', label: 'Dividend', icon: Building2, color: 'bg-purple-50 text-purple-600 border-purple-200' },
@@ -54,7 +54,7 @@ const TYPE_OPTIONS: { id: TransactionType; label: string; icon: React.ElementTyp
 export default function UniversalTransactionForm({
   isOpen,
   onClose,
-  initialType = 'expense',
+  initialType = 'income',
   initialData,
   onSuccess,
 }: UniversalFormProps) {
@@ -117,6 +117,8 @@ export default function UniversalTransactionForm({
         if (initialData.reason) setReason(String(initialData.reason));
         if (initialData.customerName) setCustomerName(String(initialData.customerName));
         if (initialData.remarks) setRemarks(String(initialData.remarks));
+      } else {
+        setTransactionType(initialType);
       }
     } else {
       resetForm();

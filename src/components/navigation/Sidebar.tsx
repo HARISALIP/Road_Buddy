@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   LayoutDashboard,
   Receipt,
@@ -15,6 +15,7 @@ import {
   Settings,
   PlusCircle,
   ShieldCheck,
+  LogOut,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -35,6 +36,16 @@ const NAV_ITEMS = [
 
 export default function Sidebar({ onOpenAddModal }: SidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      router.push('/login');
+    } catch (e) {
+      console.error('Logout error:', e);
+    }
+  };
 
   return (
     <aside className="hidden lg:flex flex-col w-64 bg-slate-900 text-slate-300 border-r border-slate-800 min-h-screen sticky top-0 shrink-0">
@@ -84,10 +95,21 @@ export default function Sidebar({ onOpenAddModal }: SidebarProps) {
         })}
       </nav>
 
+      {/* Logout Button */}
+      <div className="p-4 border-t border-slate-800/80">
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-3 w-full px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:bg-red-500/10 hover:text-red-400 transition-all"
+        >
+          <LogOut className="w-4 h-4" />
+          <span>Logout</span>
+        </button>
+      </div>
+
       {/* System Footer Badge */}
       <div className="p-4 border-t border-slate-800/80 text-[11px] text-slate-500 flex items-center gap-2">
-        <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
-        <span>Vercel + MongoDB Secure</span>
+        <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+        <span>System Live</span>
       </div>
     </aside>
   );

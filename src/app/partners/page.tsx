@@ -107,12 +107,7 @@ export default function PartnersPage() {
               <h2 className="text-xl font-extrabold text-slate-900">Business Partners</h2>
               <p className="text-xs text-slate-500">Configure equity profit share ratios and partner details</p>
             </div>
-            <button
-              onClick={handleOpenAdd}
-              className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-md flex items-center gap-1.5 transition-colors"
-            >
-              <Plus className="w-4 h-4" /> Add Partner
-            </button>
+
           </div>
 
           {loading ? (

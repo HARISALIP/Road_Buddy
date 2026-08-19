@@ -32,7 +32,7 @@ export default function DashboardPage() {
 
   // Universal Transaction Modal State
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [selectedType, setSelectedType] = useState<TransactionType>('expense');
+  const [selectedType, setSelectedType] = useState<TransactionType>('income');
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [selectedTxForEdit, setSelectedTxForEdit] = useState<any | null>(null);
 
@@ -54,7 +54,7 @@ export default function DashboardPage() {
     fetchDashboardData();
   }, [fetchDashboardData]);
 
-  const handleOpenAddModal = (type: TransactionType = 'expense') => {
+  const handleOpenAddModal = (type: TransactionType = 'income') => {
     setSelectedTxForEdit(null);
     setSelectedType(type);
     setIsAddModalOpen(true);
@@ -70,11 +70,11 @@ export default function DashboardPage() {
   return (
     <div className="flex min-h-screen bg-slate-50">
       {/* Desktop Sidebar */}
-      <Sidebar onOpenAddModal={() => handleOpenAddModal('expense')} />
+      <Sidebar onOpenAddModal={() => handleOpenAddModal('income')} />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 pb-20 lg:pb-8">
-        <Header title="Dashboard" onOpenAddModal={() => handleOpenAddModal('expense')} />
+        <Header title="Dashboard" onOpenAddModal={() => handleOpenAddModal('income')} />
 
         <main className="p-4 sm:p-6 lg:p-8 space-y-6 max-w-7xl mx-auto w-full">
           {loading ? (
@@ -119,7 +119,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Mobile Bottom Navigation Bar */}
-      <BottomNav onOpenAddModal={() => handleOpenAddModal('expense')} />
+      <BottomNav onOpenAddModal={() => handleOpenAddModal('income')} />
 
       {/* UNIVERSAL TRANSACTION FORM MODAL */}
       <UniversalTransactionForm

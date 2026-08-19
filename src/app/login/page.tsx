@@ -6,8 +6,8 @@ import { ShieldCheck, Lock, Mail } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState('admin@roadbuddy.com');
-  const [password, setPassword] = useState('admin123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -96,10 +96,6 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <div className="pt-4 border-t border-slate-100 text-center text-[11px] text-slate-400 flex items-center justify-center gap-1.5">
-          <ShieldCheck className="w-4 h-4 text-emerald-500" />
-          <span>Default: admin@roadbuddy.com / admin123</span>
-        </div>
       </div>
     </div>
   );

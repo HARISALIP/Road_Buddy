@@ -26,18 +26,31 @@ export async function POST() {
       });
     }
 
-    // 2. Partners
+    // 2. Partners & Users (Owners)
     const partnerA = await Partner.findOneAndUpdate(
-      { name: 'Partner A' },
-      { name: 'Partner A', profitSharePercentage: 50, status: 'active' },
+      { name: 'FASIL' },
+      { name: 'FASIL', profitSharePercentage: 50, status: 'active' },
       { upsert: true, new: true }
     );
 
     const partnerB = await Partner.findOneAndUpdate(
-      { name: 'Partner B' },
-      { name: 'Partner B', profitSharePercentage: 50, status: 'active' },
+      { name: 'IRSHAD' },
+      { name: 'IRSHAD', profitSharePercentage: 50, status: 'active' },
       { upsert: true, new: true }
     );
+
+    // Create User accounts for Owners
+    let fasilUser = await User.findOne({ email: 'fasil@roadbuddy.com' });
+    if (!fasilUser) {
+      const p = await hashPassword('Pachu@2233');
+      await User.create({ name: 'FASIL', email: 'fasil@roadbuddy.com', password: p, role: 'admin' });
+    }
+
+    let irshadUser = await User.findOne({ email: 'irshad@roadbuddy.com' });
+    if (!irshadUser) {
+      const p = await hashPassword('Irshad@81');
+      await User.create({ name: 'IRSHAD', email: 'irshad@roadbuddy.com', password: p, role: 'admin' });
+    }
 
     // 3. Vehicles
     const suzuki = await Vehicle.findOneAndUpdate(

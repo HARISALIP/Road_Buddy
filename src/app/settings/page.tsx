@@ -5,28 +5,38 @@ import Sidebar from '@/components/navigation/Sidebar';
 import BottomNav from '@/components/navigation/BottomNav';
 import Header from '@/components/navigation/Header';
 import UniversalTransactionForm from '@/components/forms/UniversalTransactionForm';
-import { Settings, Sparkles, Database, Shield } from 'lucide-react';
+import { Settings, Plus, Tags, Shield } from 'lucide-react';
 
 export default function SettingsPage() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [seeding, setSeeding] = useState(false);
-  const [msg, setMsg] = useState<string | null>(null);
+  const [newCategoryName, setNewCategoryName] = useState('');
+  const [newCategoryType, setNewCategoryType] = useState('expense');
+  const [categoryMsg, setCategoryMsg] = useState<{type: 'success' | 'error', text: string} | null>(null);
+  const [isSubmittingCategory, setIsSubmittingCategory] = useState(false);
 
-  const handleSeed = async () => {
-    setSeeding(true);
-    setMsg(null);
+  const handleAddCategory = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newCategoryName) return;
+    setIsSubmittingCategory(true);
+    setCategoryMsg(null);
+
     try {
-      const res = await fetch('/api/seed', { method: 'POST' });
+      const res = await fetch('/api/categories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: newCategoryName, type: newCategoryType })
+      });
       const data = await res.json();
-      setSeeding(false);
       if (res.ok) {
-        setMsg(data.message || 'Seeded successfully!');
+        setCategoryMsg({ type: 'success', text: `Category "${data.category.name}" added successfully!` });
+        setNewCategoryName('');
       } else {
-        setMsg('Seed error: ' + data.error);
+        setCategoryMsg({ type: 'error', text: data.error || 'Failed to add category' });
       }
     } catch {
-      setSeeding(false);
-      setMsg('Failed to trigger database seed.');
+      setCategoryMsg({ type: 'error', text: 'Network error. Could not add category.' });
+    } finally {
+      setIsSubmittingCategory(false);
     }
   };
 
@@ -45,31 +55,55 @@ export default function SettingsPage() {
 
           <div className="bg-white p-6 rounded-2xl border border-slate-200/80 card-shadow space-y-5">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
-                <Database className="w-5 h-5" />
+              <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
+                <Tags className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="font-bold text-slate-900 text-sm">Database Seeding & Default Setup</h3>
+                <h3 className="font-bold text-slate-900 text-sm">Manage Categories</h3>
                 <p className="text-xs text-slate-500">
-                  Populate default expense/income categories, partners (Partner A 50%, Partner B 50%), vehicles, and sample records.
+                  Add new expense or income categories to be used in your transactions.
                 </p>
               </div>
             </div>
 
-            {msg && (
-              <div className="p-3 bg-blue-50 border border-blue-100 text-blue-700 text-xs font-semibold rounded-xl">
-                {msg}
+            {categoryMsg && (
+              <div className={`p-3 text-xs font-semibold rounded-xl border ${categoryMsg.type === 'success' ? 'bg-emerald-50 border-emerald-100 text-emerald-700' : 'bg-red-50 border-red-100 text-red-700'}`}>
+                {categoryMsg.text}
               </div>
             )}
 
-            <button
-              onClick={handleSeed}
-              disabled={seeding}
-              className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-md flex items-center gap-2 transition-all disabled:opacity-50"
-            >
-              <Sparkles className="w-4 h-4 text-amber-300" />
-              <span>{seeding ? 'Seeding Database...' : 'Run Seed Script'}</span>
-            </button>
+            <form onSubmit={handleAddCategory} className="flex flex-col sm:flex-row gap-3 items-end">
+              <div className="flex-1 w-full">
+                <label className="block text-xs font-semibold text-slate-600 uppercase mb-1">Category Name *</label>
+                <input
+                  type="text"
+                  required
+                  value={newCategoryName}
+                  onChange={(e) => setNewCategoryName(e.target.value)}
+                  placeholder="e.g. Office Supplies"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500"
+                />
+              </div>
+              <div className="w-full sm:w-48">
+                <label className="block text-xs font-semibold text-slate-600 uppercase mb-1">Type *</label>
+                <select
+                  value={newCategoryType}
+                  onChange={(e) => setNewCategoryType(e.target.value)}
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500"
+                >
+                  <option value="expense">Expense</option>
+                  <option value="income">Income</option>
+                </select>
+              </div>
+              <button
+                type="submit"
+                disabled={isSubmittingCategory}
+                className="w-full sm:w-auto px-5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-md flex items-center justify-center gap-2 transition-all disabled:opacity-50 h-[42px]"
+              >
+                <Plus className="w-4 h-4" />
+                <span>{isSubmittingCategory ? 'Adding...' : 'Add'}</span>
+              </button>
+            </form>
           </div>
 
           <div className="bg-white p-6 rounded-2xl border border-slate-200/80 card-shadow space-y-3">

@@ -52,7 +52,7 @@ export default function TransactionsPage() {
   // Modals
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
-  const [selectedType, setSelectedType] = useState<TransactionType>('expense');
+  const [selectedType, setSelectedType] = useState<TransactionType>('income');
   const [selectedTxForEdit, setSelectedTxForEdit] = useState<TransactionItem | null>(null);
 
   const fetchDropdowns = async () => {
@@ -111,7 +111,7 @@ export default function TransactionsPage() {
     fetchTransactions();
   }, [fetchTransactions]);
 
-  const handleOpenAddModal = (type: TransactionType = 'expense') => {
+  const handleOpenAddModal = (type: TransactionType = 'income') => {
     setSelectedTxForEdit(null);
     setSelectedType(type);
     setIsAddModalOpen(true);
@@ -166,10 +166,10 @@ export default function TransactionsPage() {
 
   return (
     <div className="flex min-h-screen bg-slate-50">
-      <Sidebar onOpenAddModal={() => handleOpenAddModal('expense')} />
+      <Sidebar onOpenAddModal={() => handleOpenAddModal('income')} />
 
       <div className="flex-1 flex flex-col min-w-0 pb-20 lg:pb-8">
-        <Header title="Transactions" onOpenAddModal={() => handleOpenAddModal('expense')} />
+        <Header title="Transactions" onOpenAddModal={() => handleOpenAddModal('income')} />
 
         <main className="p-4 sm:p-6 lg:p-8 space-y-5 max-w-7xl mx-auto w-full">
           {/* Top Actions Bar */}
@@ -197,7 +197,7 @@ export default function TransactionsPage() {
               </button>
 
               <button
-                onClick={() => handleOpenAddModal('expense')}
+                onClick={() => handleOpenAddModal('income')}
                 className="flex-1 sm:flex-none px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5"
               >
                 <PlusCircle className="w-4 h-4" />
@@ -380,7 +380,7 @@ export default function TransactionsPage() {
         </main>
       </div>
 
-      <BottomNav onOpenAddModal={() => handleOpenAddModal('expense')} />
+      <BottomNav onOpenAddModal={() => handleOpenAddModal('income')} />
 
       <UniversalTransactionForm
         isOpen={isAddModalOpen}
