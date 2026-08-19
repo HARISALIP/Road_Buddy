@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/mongodb';
 import Transaction from '@/models/Transaction';
+import { logActivity } from '@/lib/activity';
 
 export async function GET(req: Request, { params }: { params: { id: string } }) {
   try {
@@ -46,6 +47,13 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
       return NextResponse.json({ error: 'Transaction not found' }, { status: 404 });
     }
 
+    await logActivity(
+      'UPDATE',
+      'Transaction',
+      `Updated ${updated.transactionType} (Amount: ${updated.amount})`,
+      updated._id
+    );
+
     return NextResponse.json({ success: true, transaction: updated });
   } catch (error: unknown) {
     console.error('Update transaction error:', error);
@@ -61,6 +69,14 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
     if (!voided) {
       return NextResponse.json({ error: 'Transaction not found' }, { status: 404 });
     }
+
+    await logActivity(
+      'DELETE',
+      'Transaction',
+      `Voided ${voided.transactionType} (Amount: ${voided.amount})`,
+      voided._id
+    );
+
     return NextResponse.json({ success: true, transaction: voided });
   } catch (error: unknown) {
     console.error('Delete transaction error:', error);

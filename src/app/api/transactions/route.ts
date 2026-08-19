@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/mongodb';
 import Transaction from '@/models/Transaction';
 import Asset from '@/models/Asset';
+import { logActivity } from '@/lib/activity';
 
 export async function GET(req: Request) {
   try {
@@ -142,6 +143,13 @@ export async function POST(req: Request) {
         saleAmount: parsedAmount,
       });
     }
+
+    await logActivity(
+      'CREATE',
+      'Transaction',
+      `Added ${transactionType} of ${parsedAmount}`,
+      newTx._id
+    );
 
     return NextResponse.json({ success: true, transaction: newTx }, { status: 201 });
   } catch (error: unknown) {
