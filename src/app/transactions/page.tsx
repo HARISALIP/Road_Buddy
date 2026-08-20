@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Sidebar from '@/components/navigation/Sidebar';
 import BottomNav from '@/components/navigation/BottomNav';
 import Header from '@/components/navigation/Header';
@@ -42,6 +42,10 @@ export default function TransactionsPage() {
   const [transactions, setTransactions] = useState<TransactionItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<FilterState>(DEFAULT_FILTERS);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const observerTarget = useRef<HTMLDivElement>(null);
 
   // Dropdowns
   const [categories, setCategories] = useState<{ _id: string; name: string }[]>([]);
@@ -77,8 +81,10 @@ export default function TransactionsPage() {
     }
   };
 
-  const fetchTransactions = useCallback(async () => {
-    setLoading(true);
+  const fetchTransactions = useCallback(async (pageNum: number = 1) => {
+    if (pageNum === 1) setLoading(true);
+    else setLoadingMore(true);
+
     try {
       const queryParams = new URLSearchParams();
       if (filters.type && filters.type !== 'all') queryParams.append('type', filters.type);
@@ -90,16 +96,26 @@ export default function TransactionsPage() {
       if (filters.dateFrom) queryParams.append('dateFrom', filters.dateFrom);
       if (filters.dateTo) queryParams.append('dateTo', filters.dateTo);
       if (filters.search) queryParams.append('search', filters.search);
+      
+      queryParams.append('page', pageNum.toString());
+      queryParams.append('limit', '20');
 
       const res = await fetch(`/api/transactions?${queryParams.toString()}`);
       const data = await res.json();
       if (res.ok && data.transactions) {
-        setTransactions(data.transactions);
+        if (pageNum === 1) {
+          setTransactions(data.transactions);
+        } else {
+          setTransactions((prev) => [...prev, ...data.transactions]);
+        }
+        setHasMore(data.hasMore);
+        setPage(pageNum);
       }
     } catch (err) {
       console.error('Failed to fetch transactions:', err);
     } finally {
-      setLoading(false);
+      if (pageNum === 1) setLoading(false);
+      else setLoadingMore(false);
     }
   }, [filters]);
 
@@ -108,8 +124,28 @@ export default function TransactionsPage() {
   }, []);
 
   useEffect(() => {
-    fetchTransactions();
+    fetchTransactions(1);
   }, [fetchTransactions]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !loading && !loadingMore) {
+          fetchTransactions(page + 1);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    const currentTarget = observerTarget.current;
+    if (currentTarget) {
+      observer.observe(currentTarget);
+    }
+
+    return () => {
+      if (currentTarget) observer.unobserve(currentTarget);
+    };
+  }, [hasMore, loading, loadingMore, page, fetchTransactions]);
 
   const handleOpenAddModal = (type: TransactionType = 'income') => {
     setSelectedTxForEdit(null);
@@ -128,7 +164,7 @@ export default function TransactionsPage() {
     try {
       const res = await fetch(`/api/transactions/${id}/void`, { method: 'POST' });
       if (res.ok) {
-        fetchTransactions();
+        fetchTransactions(1);
       } else {
         alert('Failed to void transaction');
       }
@@ -375,6 +411,20 @@ export default function TransactionsPage() {
                   );
                 })}
               </div>
+
+              {/* Observer Target */}
+              {hasMore && (
+                <div ref={observerTarget} className="py-6 flex justify-center items-center">
+                  {loadingMore ? (
+                    <div className="flex items-center gap-2 text-slate-500 text-sm font-medium">
+                      <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+                      Loading more...
+                    </div>
+                  ) : (
+                    <div className="h-5" />
+                  )}
+                </div>
+              )}
             </>
           )}
         </main>
@@ -387,13 +437,13 @@ export default function TransactionsPage() {
         onClose={() => setIsAddModalOpen(false)}
         initialType={selectedType}
         initialData={selectedTxForEdit}
-        onSuccess={fetchTransactions}
+        onSuccess={() => fetchTransactions(1)}
       />
 
       <ExcelImportModal
         isOpen={isImportModalOpen}
         onClose={() => setIsImportModalOpen(false)}
-        onSuccess={fetchTransactions}
+        onSuccess={() => fetchTransactions(1)}
       />
     </div>
   );

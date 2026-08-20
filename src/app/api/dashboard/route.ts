@@ -13,7 +13,8 @@ export async function GET() {
   try {
     await connectToDatabase();
 
-    const transactions = await Transaction.find()
+    // Fetch only recent 10 transactions fully populated
+    const recentTransactions = await Transaction.find()
       .populate('categoryId', 'name type')
       .populate('partnerId', 'name profitSharePercentage')
       .populate('personId', 'name')
@@ -21,17 +22,22 @@ export async function GET() {
       .populate('jobId', 'jobNumber customerName')
       .populate('assetId', 'name')
       .sort({ transactionDate: -1, createdAt: -1 })
+      .limit(10)
       .lean();
+
+    // Fetch all transactions but ONLY with fields required for calculations
+    const allTransactionsForMetrics = await Transaction.find(
+      {},
+      'status amount transactionDate transactionType partnerId'
+    ).lean();
 
     const partners = await Partner.find({ status: 'active' }).lean();
 
-    const metrics = calculateDashboardMetrics(transactions);
+    const metrics = calculateDashboardMetrics(allTransactionsForMetrics);
     const partnerSummary = calculatePartnerSummary(
       partners.map((p) => ({ _id: p._id.toString(), name: p.name, profitSharePercentage: p.profitSharePercentage })),
-      transactions
+      allTransactionsForMetrics
     );
-
-    const recentTransactions = transactions.slice(0, 10);
 
     return NextResponse.json({
       ...metrics,

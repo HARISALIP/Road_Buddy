@@ -48,6 +48,10 @@ export async function GET(req: Request) {
       ];
     }
 
+    const page = parseInt(searchParams.get('page') || '1', 10);
+    const limit = parseInt(searchParams.get('limit') || '20', 10);
+    const skip = (page - 1) * limit;
+
     const transactions = await Transaction.find(filter)
       .populate('categoryId', 'name type')
       .populate('partnerId', 'name profitSharePercentage')
@@ -56,9 +60,16 @@ export async function GET(req: Request) {
       .populate('jobId', 'jobNumber customerName')
       .populate('assetId', 'name')
       .sort({ transactionDate: -1, createdAt: -1 })
+      .skip(skip)
+      .limit(limit + 1)
       .lean();
 
-    return NextResponse.json({ success: true, count: transactions.length, transactions });
+    const hasMore = transactions.length > limit;
+    if (hasMore) {
+      transactions.pop(); // Remove the extra item used for hasMore check
+    }
+
+    return NextResponse.json({ success: true, count: transactions.length, transactions, hasMore });
   } catch (error: unknown) {
     console.error('Fetch transactions error:', error);
     return NextResponse.json({ error: 'Failed to fetch transactions' }, { status: 500 });
