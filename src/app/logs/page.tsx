@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Sidebar } from '@/components/navigation/Sidebar';
-import { Header } from '@/components/navigation/Header';
+import Sidebar from '@/components/navigation/Sidebar';
+import Header from '@/components/navigation/Header';
 import { Activity, Clock, PlusCircle, Trash2, Edit } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -18,6 +18,10 @@ interface LogEntry {
 export default function LogsPage() {
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const handleOpenAddModal = () => {
+    // Dummy function since Add Modal isn't implemented on logs page yet
+  };
 
   useEffect(() => {
     fetchLogs();
@@ -65,9 +69,9 @@ export default function LogsPage() {
 
   return (
     <div className="flex h-screen bg-[#0B0F19] text-white overflow-hidden selection:bg-emerald-500/30">
-      <Sidebar />
+      <Sidebar onOpenAddModal={handleOpenAddModal} />
       <div className="flex-1 flex flex-col min-w-0">
-        <Header />
+        <Header onOpenAddModal={handleOpenAddModal} />
         
         <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 scroll-smooth custom-scrollbar">
           <div className="max-w-6xl mx-auto space-y-6">

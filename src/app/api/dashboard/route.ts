@@ -2,6 +2,11 @@ import { NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/mongodb';
 import Transaction from '@/models/Transaction';
 import Partner from '@/models/Partner';
+import Category from '@/models/Category';
+import Person from '@/models/Person';
+import Vehicle from '@/models/Vehicle';
+import Job from '@/models/Job';
+import Asset from '@/models/Asset';
 import { calculateDashboardMetrics, calculatePartnerSummary } from '@/lib/calculations';
 
 export async function GET() {
