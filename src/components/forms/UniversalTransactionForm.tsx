@@ -32,13 +32,14 @@ interface DropdownItem {
   type?: string;
   registrationNumber?: string;
   jobNumber?: string;
+  customerName?: string;
 }
 
 interface UniversalFormProps {
   isOpen: boolean;
   onClose: () => void;
   initialType?: TransactionType;
-  initialData?: Record<string, unknown>;
+  initialData?: any;
   onSuccess?: () => void;
 }
 

@@ -67,7 +67,7 @@ export async function POST() {
 
     // 4. People
     const peopleNames = ['Sahad', 'Shibin', 'Suhail'];
-    const peopleDocs: Record<string, unknown>[] = [];
+    const peopleDocs: any[] = [];
     for (const pName of peopleNames) {
       const p = await Person.findOneAndUpdate(
         { name: pName },
