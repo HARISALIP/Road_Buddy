@@ -1,5 +1,16 @@
 import mongoose from 'mongoose';
 
+// Pre-register all models to avoid MissingSchemaError in serverless environments
+import '@/models/ActivityLog';
+import '@/models/Asset';
+import '@/models/Category';
+import '@/models/Job';
+import '@/models/Partner';
+import '@/models/Person';
+import '@/models/Transaction';
+import '@/models/User';
+import '@/models/Vehicle';
+
 const MONGODB_URI = process.env.MONGODB_URI;
 
 /**
