@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Sidebar from '@/components/navigation/Sidebar';
 import Header from '@/components/navigation/Header';
 import { Activity, Clock, PlusCircle, Trash2, Edit } from 'lucide-react';
+import BottomNav from '@/components/navigation/BottomNav';
 import { format } from 'date-fns';
 
 interface LogEntry {
@@ -73,7 +74,7 @@ export default function LogsPage() {
       <div className="flex-1 flex flex-col min-w-0">
         <Header onOpenAddModal={handleOpenAddModal} />
         
-        <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 scroll-smooth custom-scrollbar">
+        <main className="flex-1 overflow-y-auto p-4 pb-24 md:p-6 lg:p-8 scroll-smooth custom-scrollbar">
           <div className="max-w-6xl mx-auto space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
@@ -138,6 +139,8 @@ export default function LogsPage() {
           </div>
         </main>
       </div>
+
+      <BottomNav onOpenAddModal={handleOpenAddModal} />
     </div>
   );
 }
