@@ -122,7 +122,7 @@ export default function RecentTransactions({
                         : 'text-slate-900'
                     }`}
                   >
-                    {isPositiveType(tx.transactionType) ? '+' : '-'} ₹
+                    {isPositiveType(tx.transactionType) ? '+' : '-'} SAR{' '}
                     {tx.amount.toLocaleString()}
                   </span>
                 </div>

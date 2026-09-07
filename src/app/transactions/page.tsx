@@ -306,7 +306,7 @@ export default function TransactionsPage() {
                           </td>
                           <td className="py-3 px-4 font-extrabold whitespace-nowrap">
                             <span className={isVoid ? 'text-slate-400 line-through' : isPos ? 'text-emerald-600' : 'text-slate-900'}>
-                              {isPos ? '+' : '-'} ₹{tx.amount.toLocaleString()}
+                              {isPos ? '+' : '-'} SAR {tx.amount.toLocaleString()}
                             </span>
                           </td>
                           <td className="py-3 px-4 text-slate-600">
@@ -368,7 +368,7 @@ export default function TransactionsPage() {
                         </div>
 
                         <span className={`text-base font-extrabold ${isVoid ? 'text-slate-400 line-through' : isPos ? 'text-emerald-600' : 'text-slate-900'}`}>
-                          {isPos ? '+' : '-'} ₹{tx.amount.toLocaleString()}
+                          {isPos ? '+' : '-'} SAR {tx.amount.toLocaleString()}
                         </span>
                       </div>
 

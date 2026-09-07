@@ -31,7 +31,7 @@ export default function SummaryCards({
           <div>
             <span className="text-xs font-semibold text-blue-100 uppercase tracking-wider">CURRENT BALANCE</span>
             <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight mt-1">
-              ₹{currentBalance.toLocaleString()}
+              SAR {currentBalance.toLocaleString()}
             </h2>
             <p className="text-xs text-blue-200 mt-1 font-medium">Calculated automatically from all active transactions</p>
           </div>
@@ -64,7 +64,7 @@ export default function SummaryCards({
           <div>
             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">TOTAL INVESTMENT</span>
             <p className="text-xl font-bold text-slate-900 mt-1">
-              ₹{totalInvestment.toLocaleString()}
+              SAR {totalInvestment.toLocaleString()}
             </p>
             <span className="inline-block text-[10px] text-blue-600 font-semibold bg-blue-50 px-2 py-0.5 rounded mt-1">
               Partner Capital (Not Income)
@@ -80,7 +80,7 @@ export default function SummaryCards({
           <div>
             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">TOTAL INCOME</span>
             <p className="text-xl font-bold text-emerald-600 mt-1">
-              + ₹{totalIncome.toLocaleString()}
+              + SAR {totalIncome.toLocaleString()}
             </p>
             <span className="inline-block text-[10px] text-emerald-600 font-semibold bg-emerald-50 px-2 py-0.5 rounded mt-1">
               Operational Earnings
@@ -96,7 +96,7 @@ export default function SummaryCards({
           <div>
             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">TOTAL EXPENSES</span>
             <p className="text-xl font-bold text-red-600 mt-1">
-              - ₹{totalExpenses.toLocaleString()}
+              - SAR {totalExpenses.toLocaleString()}
             </p>
             <span className="inline-block text-[10px] text-red-600 font-semibold bg-red-50 px-2 py-0.5 rounded mt-1">
               Operational Costs

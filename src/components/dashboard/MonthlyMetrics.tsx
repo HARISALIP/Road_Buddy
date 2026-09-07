@@ -33,7 +33,7 @@ export default function MonthlyMetrics({
         <div className="p-3 bg-emerald-50/60 rounded-xl border border-emerald-100">
           <span className="text-[11px] font-semibold text-emerald-700">Income</span>
           <p className="text-base sm:text-lg font-extrabold text-emerald-600 mt-0.5">
-            + ₹{monthlyIncome.toLocaleString()}
+            + SAR {monthlyIncome.toLocaleString()}
           </p>
         </div>
 
@@ -41,7 +41,7 @@ export default function MonthlyMetrics({
         <div className="p-3 bg-red-50/60 rounded-xl border border-red-100">
           <span className="text-[11px] font-semibold text-red-700">Expenses</span>
           <p className="text-base sm:text-lg font-extrabold text-red-600 mt-0.5">
-            - ₹{monthlyExpenses.toLocaleString()}
+            - SAR {monthlyExpenses.toLocaleString()}
           </p>
         </div>
 
@@ -56,7 +56,7 @@ export default function MonthlyMetrics({
             )}
           </div>
           <p className={`text-base sm:text-lg font-extrabold mt-0.5 ${isPositive ? 'text-blue-700' : 'text-amber-700'}`}>
-            {isPositive ? '+' : ''} ₹{monthlyNetChange.toLocaleString()}
+            {isPositive ? '+' : ''} SAR {monthlyNetChange.toLocaleString()}
           </p>
         </div>
       </div>

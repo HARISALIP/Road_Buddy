@@ -36,18 +36,18 @@ export function generatePdfReport(
   doc.text('Financial Summary', 14, 46);
 
   const summaryData = [
-    ['Current Balance', `₹${metrics.currentBalance.toLocaleString()}`],
-    ['Total Investment', `₹${metrics.totalInvestment.toLocaleString()}`],
-    ['Total Operational Income', `₹${metrics.totalIncome.toLocaleString()}`],
-    ['Total Operational Expenses', `₹${metrics.totalExpenses.toLocaleString()}`],
-    ['Net Operating Profit', `₹${metrics.operatingProfit.toLocaleString()}`],
-    ['Total Withdrawals', `₹${metrics.totalWithdrawals.toLocaleString()}`],
-    ['Total Dividends', `₹${metrics.totalDividends.toLocaleString()}`],
+    ['Current Balance', `SAR ${metrics.currentBalance.toLocaleString()}`],
+    ['Total Investment', `SAR ${metrics.totalInvestment.toLocaleString()}`],
+    ['Total Operational Income', `SAR ${metrics.totalIncome.toLocaleString()}`],
+    ['Total Operational Expenses', `SAR ${metrics.totalExpenses.toLocaleString()}`],
+    ['Net Operating Profit', `SAR ${metrics.operatingProfit.toLocaleString()}`],
+    ['Total Withdrawals', `SAR ${metrics.totalWithdrawals.toLocaleString()}`],
+    ['Total Dividends', `SAR ${metrics.totalDividends.toLocaleString()}`],
   ];
 
   autoTable(doc, {
     startY: 50,
-    head: [['Metric', 'Amount']],
+    head: [['Metric', 'Amount (SAR)']],
     body: summaryData,
     theme: 'grid',
     headStyles: { fillColor: [37, 99, 235], textColor: [255, 255, 255] },
@@ -65,7 +65,7 @@ export function generatePdfReport(
     new Date(t.transactionDate).toLocaleDateString(),
     t.transactionType.toUpperCase(),
     t.categoryName || t.partnerName || '-',
-    `₹${t.amount.toLocaleString()}`,
+    `SAR ${t.amount.toLocaleString()}`,
     t.remarks || '',
   ]);
 

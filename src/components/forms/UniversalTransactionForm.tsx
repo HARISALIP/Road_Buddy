@@ -298,14 +298,14 @@ export default function UniversalTransactionForm({
               <div className="space-y-1">
                 <h3 className="text-xl font-bold text-slate-900">Transaction Saved!</h3>
                 <p className="text-sm text-slate-600 capitalize">
-                  {saveResult.txType} • ₹{saveResult.amount.toLocaleString()}
+                  {saveResult.txType} • SAR {saveResult.amount.toLocaleString()}
                 </p>
               </div>
 
               <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 max-w-xs mx-auto">
                 <span className="text-xs font-semibold text-blue-600 uppercase tracking-wider">New Calculated Balance</span>
                 <p className="text-2xl font-bold text-blue-900 mt-1">
-                  ₹{saveResult.newBalance?.toLocaleString()}
+                  SAR {saveResult.newBalance?.toLocaleString()}
                 </p>
               </div>
 
@@ -385,7 +385,7 @@ export default function UniversalTransactionForm({
 
                 <div>
                   <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">
-                    Amount (₹) *
+                    Amount (SAR) *
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">

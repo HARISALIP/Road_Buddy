@@ -46,22 +46,22 @@ export default function PartnerSummary({ partnerSummary = [] }: PartnerSummaryPr
               <div className="grid grid-cols-2 gap-2 text-xs pt-1">
                 <div className="bg-white p-2.5 rounded-lg border border-slate-100">
                   <span className="text-slate-500 text-[10px] block">Investment</span>
-                  <span className="font-bold text-blue-600">₹{partner.investment.toLocaleString()}</span>
+                  <span className="font-bold text-blue-600">SAR {partner.investment.toLocaleString()}</span>
                 </div>
 
                 <div className="bg-white p-2.5 rounded-lg border border-slate-100">
                   <span className="text-slate-500 text-[10px] block">Withdrawal</span>
-                  <span className="font-bold text-amber-600">₹{partner.withdrawal.toLocaleString()}</span>
+                  <span className="font-bold text-amber-600">SAR {partner.withdrawal.toLocaleString()}</span>
                 </div>
 
                 <div className="bg-white p-2.5 rounded-lg border border-slate-100">
                   <span className="text-slate-500 text-[10px] block">Dividend Paid</span>
-                  <span className="font-bold text-purple-600">₹{partner.dividend.toLocaleString()}</span>
+                  <span className="font-bold text-purple-600">SAR {partner.dividend.toLocaleString()}</span>
                 </div>
 
                 <div className="bg-white p-2.5 rounded-lg border border-slate-100">
                   <span className="text-slate-500 text-[10px] block">Calculated Profit Share</span>
-                  <span className="font-bold text-emerald-600">₹{partner.profitShare.toLocaleString()}</span>
+                  <span className="font-bold text-emerald-600">SAR {partner.profitShare.toLocaleString()}</span>
                 </div>
               </div>
             </div>

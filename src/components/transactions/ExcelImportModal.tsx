@@ -174,7 +174,7 @@ export default function ExcelImportModal({ isOpen, onClose, onSuccess }: ExcelIm
                         <td className="p-2">{row.rowId}</td>
                         <td className="p-2 capitalize font-semibold">{row.transactionType}</td>
                         <td className="p-2">{row.lineItem}</td>
-                        <td className="p-2 font-bold">₹{row.amount}</td>
+                        <td className="p-2 font-bold">SAR {row.amount}</td>
                         <td className="p-2 max-w-[120px] truncate">{row.remarks}</td>
                         <td className="p-2">
                           {row.isValid ? (

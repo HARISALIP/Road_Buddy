@@ -62,21 +62,21 @@ export default function ReportsPage() {
                   <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-100">
                     <span className="text-xs font-semibold text-emerald-700">Operational Income</span>
                     <p className="text-xl font-extrabold text-emerald-600 mt-1">
-                      ₹{metrics?.totalIncome.toLocaleString() || 0}
+                      SAR {metrics?.totalIncome.toLocaleString() || 0}
                     </p>
                   </div>
 
                   <div className="p-4 bg-red-50 rounded-xl border border-red-100">
                     <span className="text-xs font-semibold text-red-700">Operating Expenses</span>
                     <p className="text-xl font-extrabold text-red-600 mt-1">
-                      - ₹{metrics?.totalExpenses.toLocaleString() || 0}
+                      - SAR {metrics?.totalExpenses.toLocaleString() || 0}
                     </p>
                   </div>
 
                   <div className="p-4 bg-blue-50 rounded-xl border border-blue-100">
                     <span className="text-xs font-semibold text-blue-700">Net Operating Profit</span>
                     <p className="text-xl font-extrabold text-blue-700 mt-1">
-                      ₹{metrics?.operatingProfit.toLocaleString() || 0}
+                      SAR {metrics?.operatingProfit.toLocaleString() || 0}
                     </p>
                   </div>
                 </div>
@@ -95,22 +95,22 @@ export default function ReportsPage() {
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
                     <span className="text-[11px] font-semibold text-slate-500 block">Total Investment</span>
-                    <span className="text-base font-bold text-blue-600">₹{metrics?.totalInvestment.toLocaleString() || 0}</span>
+                    <span className="text-base font-bold text-blue-600">SAR {metrics?.totalInvestment.toLocaleString() || 0}</span>
                   </div>
 
                   <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
                     <span className="text-[11px] font-semibold text-slate-500 block">Partner Withdrawals</span>
-                    <span className="text-base font-bold text-amber-600">₹{metrics?.totalWithdrawals.toLocaleString() || 0}</span>
+                    <span className="text-base font-bold text-amber-600">SAR {metrics?.totalWithdrawals.toLocaleString() || 0}</span>
                   </div>
 
                   <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
                     <span className="text-[11px] font-semibold text-slate-500 block">Dividends Distributed</span>
-                    <span className="text-base font-bold text-purple-600">₹{metrics?.totalDividends.toLocaleString() || 0}</span>
+                    <span className="text-base font-bold text-purple-600">SAR {metrics?.totalDividends.toLocaleString() || 0}</span>
                   </div>
 
                   <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
                     <span className="text-[11px] font-semibold text-slate-500 block">Asset Sales</span>
-                    <span className="text-base font-bold text-teal-600">₹{metrics?.totalAssetSales.toLocaleString() || 0}</span>
+                    <span className="text-base font-bold text-teal-600">SAR {metrics?.totalAssetSales.toLocaleString() || 0}</span>
                   </div>
                 </div>
               </div>

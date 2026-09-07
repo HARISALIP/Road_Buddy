@@ -101,9 +101,9 @@ export default function AssetsPage() {
                       <h3 className="font-bold text-slate-900 text-base">{a.name}</h3>
                       <p className="text-xs text-slate-500">{a.assetType || 'General Asset'}</p>
                       <div className="mt-2 space-y-0.5 text-xs">
-                        <p className="text-slate-600">Purchase: <span className="font-bold">₹{a.purchaseAmount?.toLocaleString() || 0}</span></p>
+                        <p className="text-slate-600">Purchase: <span className="font-bold">SAR {a.purchaseAmount?.toLocaleString() || 0}</span></p>
                         {isSold && (
-                          <p className="text-teal-700 font-bold">Sold For: ₹{a.saleAmount?.toLocaleString() || 0}</p>
+                          <p className="text-teal-700 font-bold">Sold For: SAR {a.saleAmount?.toLocaleString() || 0}</p>
                         )}
                       </div>
                       <span className={`inline-block mt-2 text-[10px] font-bold px-2 py-0.5 rounded capitalize ${isSold ? 'bg-teal-100 text-teal-800' : 'bg-blue-50 text-blue-600'}`}>
@@ -147,7 +147,7 @@ export default function AssetsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-600 uppercase mb-1">Purchase Cost (₹)</label>
+                <label className="block text-xs font-semibold text-slate-600 uppercase mb-1">Purchase Cost (SAR)</label>
                 <input
                   type="number"
                   placeholder="0"
