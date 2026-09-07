@@ -6,7 +6,7 @@ import './globals.css';
 export const metadata: Metadata = {
   title: 'Road Buddy Finance - Modern Partnership Expense Management',
   description: 'Clean financial and expense tracking system for partnership businesses in Saudi Arabia.',
-  manifest: '/manifest.webmanifest',
+  manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
@@ -33,6 +33,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="application-name" content="Road Buddy" />
+        <meta name="apple-mobile-web-app-title" content="Road Buddy" />
+        <meta name="msapplication-starturl" content="/" />
+      </head>
       <body className="antialiased bg-slate-50 text-slate-900 min-h-screen">
         <ServiceWorkerRegister />
         {children}

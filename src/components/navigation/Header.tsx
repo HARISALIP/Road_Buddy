@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { PlusCircle, Sparkles, Smartphone } from 'lucide-react';
+import { PlusCircle, Sparkles, Download, Laptop } from 'lucide-react';
 import { triggerPWAInstallModal } from '../pwa/InstallPromptBanner';
 
 interface HeaderProps {
@@ -42,12 +42,12 @@ export default function Header({ title = 'Dashboard', onOpenAddModal }: HeaderPr
       <div className="flex items-center gap-2 sm:gap-3">
         <button
           onClick={triggerPWAInstallModal}
-          title="Install Road Buddy App"
-          className="flex items-center gap-1.5 px-3 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold rounded-xl transition-all border border-blue-200/60"
+          title="Install Road Buddy App (Windows PC & Mobile)"
+          className="flex items-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-extrabold rounded-xl shadow-md shadow-blue-500/25 transition-all border border-blue-400/30"
         >
-          <Smartphone className="w-4 h-4 text-blue-600" />
+          <Download className="w-3.5 h-3.5" />
           <span className="hidden sm:inline">Install App</span>
-          <span className="sm:hidden">App</span>
+          <span className="sm:hidden">Install</span>
         </button>
 
         <button
