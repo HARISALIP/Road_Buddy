@@ -17,7 +17,9 @@ import {
   PlusCircle,
   ShieldCheck,
   LogOut,
+  Smartphone,
 } from 'lucide-react';
+import { triggerPWAInstallModal } from '../pwa/InstallPromptBanner';
 
 interface SidebarProps {
   onOpenAddModal: () => void;
@@ -97,8 +99,16 @@ export default function Sidebar({ onOpenAddModal }: SidebarProps) {
         })}
       </nav>
 
-      {/* Logout Button */}
-      <div className="p-4 border-t border-slate-800/80">
+      {/* Install App & Logout Buttons */}
+      <div className="p-4 border-t border-slate-800/80 space-y-1">
+        <button
+          onClick={triggerPWAInstallModal}
+          className="flex items-center gap-3 w-full px-3.5 py-2.5 rounded-xl text-xs font-semibold text-blue-400 hover:bg-blue-500/10 hover:text-blue-300 transition-all"
+        >
+          <Smartphone className="w-4 h-4 text-blue-400" />
+          <span>Install Mobile App</span>
+        </button>
+
         <button
           onClick={handleLogout}
           className="flex items-center gap-3 w-full px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:bg-red-500/10 hover:text-red-400 transition-all"
