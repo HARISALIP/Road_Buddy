@@ -5,6 +5,7 @@ import Category from '@/models/Category';
 import Person from '@/models/Person';
 import Vehicle from '@/models/Vehicle';
 import { parseExcelImportBuffer } from '@/lib/excel';
+import { logActivity } from '@/lib/activity';
 
 export async function POST(req: Request) {
   try {
@@ -26,10 +27,20 @@ export async function POST(req: Request) {
     } else {
       // Batch confirm import
       const body = await req.json();
-      const { items } = body;
+      const { items, importMode = 'append' } = body;
 
       if (!Array.isArray(items) || items.length === 0) {
         return NextResponse.json({ error: 'No valid items to import' }, { status: 400 });
+      }
+
+      // If Replace/Restore mode is selected, clear existing transactions first
+      if (importMode === 'replace') {
+        await Transaction.deleteMany({});
+        await logActivity(
+          'DELETE',
+          'Transaction',
+          'Cleared all existing transactions for full Excel restore/import'
+        );
       }
 
       let importedCount = 0;
@@ -96,8 +107,15 @@ export async function POST(req: Request) {
         }
       }
 
+      await logActivity(
+        'CREATE',
+        'Transaction',
+        `Excel import completed (${importMode} mode): ${importedCount} imported, ${failedCount} failed`
+      );
+
       return NextResponse.json({
         success: true,
+        importMode,
         importedCount,
         failedCount,
         errors,

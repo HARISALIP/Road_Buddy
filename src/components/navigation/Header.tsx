@@ -1,8 +1,7 @@
 'use client';
 
 import React from 'react';
-import { PlusCircle, Sparkles, Download, Laptop } from 'lucide-react';
-import { triggerPWAInstallModal } from '../pwa/InstallPromptBanner';
+import { PlusCircle, Sparkles } from 'lucide-react';
 
 interface HeaderProps {
   title?: string;
@@ -40,16 +39,6 @@ export default function Header({ title = 'Dashboard', onOpenAddModal }: HeaderPr
       </div>
 
       <div className="flex items-center gap-2 sm:gap-3">
-        <button
-          onClick={triggerPWAInstallModal}
-          title="Install Road Buddy App (Windows PC & Mobile)"
-          className="flex items-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-extrabold rounded-xl shadow-md shadow-blue-500/25 transition-all border border-blue-400/30"
-        >
-          <Download className="w-3.5 h-3.5" />
-          <span className="hidden sm:inline">Install App</span>
-          <span className="sm:hidden">Install</span>
-        </button>
-
         <button
           onClick={handleSeed}
           title="Seed Default Data"

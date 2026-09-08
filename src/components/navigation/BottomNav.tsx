@@ -17,10 +17,8 @@ import {
   Package,
   Settings,
   LogOut,
-  X,
-  Smartphone,
+  X
 } from 'lucide-react';
-import { triggerPWAInstallModal } from '../pwa/InstallPromptBanner';
 
 interface BottomNavProps {
   onOpenAddModal: () => void;
@@ -97,22 +95,7 @@ export default function BottomNav({ onOpenAddModal }: BottomNavProps) {
                 );
               })}
               
-              <div className="h-px bg-slate-100 my-2"></div>
-
-              <button
-                onClick={() => {
-                  setIsMenuOpen(false);
-                  triggerPWAInstallModal();
-                }}
-                className="w-full flex items-center gap-3 p-3.5 rounded-2xl text-blue-700 bg-blue-50/60 hover:bg-blue-100/80 transition-all font-semibold"
-              >
-                <div className="p-2 rounded-xl bg-blue-100">
-                  <Smartphone className="w-5 h-5 text-blue-600" />
-                </div>
-                <span className="text-sm">Install Mobile App</span>
-              </button>
-
-              <div className="h-px bg-slate-100 my-2"></div>
+              <div className="h-px bg-slate-100 my-4"></div>
               
               <button
                 onClick={() => {
