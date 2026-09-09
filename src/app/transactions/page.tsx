@@ -162,13 +162,16 @@ export default function TransactionsPage() {
   const handleVoid = async (id: string) => {
     if (!confirm('Are you sure you want to void this transaction? It will be excluded from balance calculations.')) return;
     try {
+      setTransactions((prev) =>
+        prev.map((t) => (t._id === id ? { ...t, status: 'void' } : t))
+      );
       const res = await fetch(`/api/transactions/${id}/void`, { method: 'POST' });
-      if (res.ok) {
+      if (!res.ok) {
         fetchTransactions(1);
-      } else {
         alert('Failed to void transaction');
       }
     } catch {
+      fetchTransactions(1);
       alert('Error voiding transaction');
     }
   };
@@ -176,13 +179,15 @@ export default function TransactionsPage() {
   const handleDeletePermanent = async (id: string) => {
     if (!confirm('Are you sure you want to PERMANENTLY delete this transaction record? It will be completely removed.')) return;
     try {
+      // Optimistically hide row from screen immediately
+      setTransactions((prev) => prev.filter((t) => t._id !== id));
       const res = await fetch(`/api/transactions/${id}?permanent=true`, { method: 'DELETE' });
-      if (res.ok) {
+      if (!res.ok) {
         fetchTransactions(1);
-      } else {
         alert('Failed to delete transaction');
       }
     } catch {
+      fetchTransactions(1);
       alert('Error deleting transaction');
     }
   };
