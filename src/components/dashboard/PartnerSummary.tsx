@@ -39,7 +39,7 @@ export default function PartnerSummary({ partnerSummary = [] }: PartnerSummaryPr
                   </span>
                 </div>
                 <div className="w-8 h-8 rounded-full bg-blue-600 text-white font-bold text-xs flex items-center justify-center">
-                  {partner.name.charAt(partner.name.length - 1) || 'P'}
+                  {partner.name.charAt(0) || 'P'}
                 </div>
               </div>
 
