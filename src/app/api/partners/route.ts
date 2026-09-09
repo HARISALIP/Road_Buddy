@@ -8,7 +8,7 @@ import Partner from '@/models/Partner';
 export async function GET() {
   try {
     await connectToDatabase();
-    const partners = await Partner.find().sort({ createdAt: -1 });
+    const partners = await Partner.find({ status: 'active' }).sort({ createdAt: -1 });
     return NextResponse.json({ success: true, partners });
   } catch (error: unknown) {
     console.error('Fetch partners error:', error);

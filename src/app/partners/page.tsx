@@ -5,7 +5,7 @@ import Sidebar from '@/components/navigation/Sidebar';
 import BottomNav from '@/components/navigation/BottomNav';
 import Header from '@/components/navigation/Header';
 import UniversalTransactionForm from '@/components/forms/UniversalTransactionForm';
-import { Users, Plus, Edit2, ShieldAlert } from 'lucide-react';
+import { Plus, Edit2, Trash2 } from 'lucide-react';
 
 interface PartnerItem {
   _id: string;
@@ -61,6 +61,21 @@ export default function PartnersPage() {
     setIsFormOpen(true);
   };
 
+  const handleDelete = async (partnerId: string, partnerName: string) => {
+    if (!confirm(`Are you sure you want to remove partner "${partnerName}"?`)) return;
+
+    try {
+      const res = await fetch(`/api/partners/${partnerId}`, { method: 'DELETE' });
+      if (res.ok) {
+        fetchPartners();
+      } else {
+        alert('Failed to remove partner.');
+      }
+    } catch {
+      alert('Error removing partner.');
+    }
+  };
+
   const handleSavePartner = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name) return;
@@ -108,6 +123,12 @@ export default function PartnersPage() {
               <p className="text-xs text-slate-500">Configure equity profit share ratios and partner details</p>
             </div>
 
+            <button
+              onClick={handleOpenAdd}
+              className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-md flex items-center gap-2 transition-colors"
+            >
+              <Plus className="w-4 h-4" /> Add Partner
+            </button>
           </div>
 
           {loading ? (
@@ -118,7 +139,7 @@ export default function PartnersPage() {
                 <div key={p._id} className="bg-white p-5 rounded-2xl border border-slate-200/80 card-shadow flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 font-black text-lg flex items-center justify-center">
-                      {p.name.charAt(p.name.length - 1) || 'P'}
+                      {p.name.charAt(0) || 'P'}
                     </div>
                     <div>
                       <h3 className="font-bold text-slate-900 text-base">{p.name}</h3>
@@ -129,12 +150,22 @@ export default function PartnersPage() {
                     </div>
                   </div>
 
-                  <button
-                    onClick={() => handleEdit(p)}
-                    className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-colors"
-                  >
-                    <Edit2 className="w-4 h-4" />
-                  </button>
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => handleEdit(p)}
+                      title="Edit partner"
+                      className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-colors"
+                    >
+                      <Edit2 className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(p._id, p.name)}
+                      title="Delete partner"
+                      className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
