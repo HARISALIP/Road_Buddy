@@ -39,6 +39,14 @@ export function exportTransactionsToExcel(transactions: Record<string, unknown>[
   return buffer;
 }
 
+function parseAmount(val: unknown): number {
+  if (typeof val === 'number') return isNaN(val) ? 0 : val;
+  if (!val) return 0;
+  const cleaned = String(val).replace(/[^0-9.-]/g, '');
+  const num = parseFloat(cleaned);
+  return isNaN(num) ? 0 : num;
+}
+
 export function parseExcelImportBuffer(buffer: Buffer) {
   const workbook = XLSX.read(buffer, { type: 'buffer' });
   const sheetName = workbook.SheetNames[0];
@@ -46,28 +54,80 @@ export function parseExcelImportBuffer(buffer: Buffer) {
   const rows: Record<string, unknown>[] = XLSX.utils.sheet_to_json(worksheet, { raw: false });
 
   const parsedItems = rows.map((row, idx) => {
-    const rawDate = row['Date'] || row['date'] || new Date().toISOString();
-    const lineItem = String(row['Line Item'] || row['line item'] || row['Category'] || row['category'] || 'Expense');
-    const remarks = String(row['Remarks'] || row['remarks'] || row['Description'] || '');
-    const person = String(row['Person'] || row['person'] || '');
-    const vehicle = String(row['Vehicle'] || row['vehicle'] || '');
+    // Helper to search row by case-insensitive key variants
+    const getVal = (...keys: string[]): string => {
+      for (const k of keys) {
+        for (const rowKey of Object.keys(row)) {
+          if (rowKey.trim().toLowerCase() === k.trim().toLowerCase()) {
+            const val = row[rowKey];
+            if (val !== undefined && val !== null) return String(val).trim();
+          }
+        }
+      }
+      return '';
+    };
 
-    const investment = Number(row['Investment'] || row['investment'] || 0);
-    const income = Number(row['Income'] || row['income'] || 0);
-    const expense = Number(row['Expense'] || row['expense'] || row['Amount'] || row['amount'] || 0);
+    const rawDate = getVal('Date', 'transactionDate', 'Date/Time') || new Date().toISOString();
+    const rawType = getVal('Type', 'Transaction Type', 'transactionType', 'transaction_type').toLowerCase();
+    const lineItem = getVal('Category', 'Line Item', 'line item', 'Item', 'Category Name') || 'General';
+    const remarks = getVal('Remarks', 'Description', 'Notes', 'Memo');
+    const partner = getVal('Partner', 'Partner Name', 'partner_name');
+    const person = getVal('Person', 'Person Name', 'person_name');
+    const vehicle = getVal('Vehicle', 'Vehicle Name', 'vehicle_name');
+    const job = getVal('Job', 'Job Number', 'jobNumber');
+    const asset = getVal('Asset', 'Asset Name', 'assetName');
+    const invoiceNumber = getVal('InvoiceNumber', 'Invoice Number', 'Invoice', 'Bill');
+    const paymentMethod = getVal('PaymentMethod', 'Payment Method', 'Payment') || 'Cash';
 
-    let type: 'investment' | 'income' | 'expense' = 'expense';
+    const investmentAmt = parseAmount(getVal('Investment'));
+    const incomeAmt = parseAmount(getVal('Income'));
+    const expenseAmt = parseAmount(getVal('Expense'));
+    const withdrawalAmt = parseAmount(getVal('Withdrawal'));
+    const dividendAmt = parseAmount(getVal('Dividend'));
+    const assetSaleAmt = parseAmount(getVal('Asset Sale', 'AssetSale'));
+    const generalAmt = parseAmount(getVal('Amount'));
+
+    let type: 'expense' | 'income' | 'investment' | 'withdrawal' | 'dividend' | 'asset_sale' = 'expense';
     let amount = 0;
 
-    if (investment > 0) {
+    // 1. Explicit Type mapping
+    if (['expense', 'income', 'investment', 'withdrawal', 'dividend', 'asset_sale'].includes(rawType)) {
+      type = rawType as typeof type;
+      amount = generalAmt || expenseAmt || incomeAmt || investmentAmt || withdrawalAmt || dividendAmt || assetSaleAmt;
+    } else if (investmentAmt > 0) {
       type = 'investment';
-      amount = investment;
-    } else if (income > 0) {
+      amount = investmentAmt;
+    } else if (incomeAmt > 0) {
       type = 'income';
-      amount = income;
-    } else {
+      amount = incomeAmt;
+    } else if (withdrawalAmt > 0) {
+      type = 'withdrawal';
+      amount = withdrawalAmt;
+    } else if (dividendAmt > 0) {
+      type = 'dividend';
+      amount = dividendAmt;
+    } else if (assetSaleAmt > 0) {
+      type = 'asset_sale';
+      amount = assetSaleAmt;
+    } else if (expenseAmt > 0) {
       type = 'expense';
-      amount = expense;
+      amount = expenseAmt;
+    } else {
+      amount = generalAmt;
+      // Infer type from category/remarks if general amount was given
+      const lowerCategory = lineItem.toLowerCase();
+      const lowerRemarks = remarks.toLowerCase();
+      if (
+        lowerCategory.includes('income') ||
+        lowerCategory.includes('rent') ||
+        lowerRemarks.includes('job income') ||
+        lowerRemarks.includes('job - income') ||
+        lowerRemarks.includes('vehicle rent')
+      ) {
+        type = 'income';
+      } else {
+        type = 'expense';
+      }
     }
 
     return {
@@ -76,9 +136,14 @@ export function parseExcelImportBuffer(buffer: Buffer) {
       transactionType: type,
       lineItem,
       amount,
-      remarks,
+      partner,
       person,
       vehicle,
+      job,
+      asset,
+      invoiceNumber,
+      paymentMethod,
+      remarks,
       isValid: amount > 0,
       error: amount <= 0 ? 'Amount must be greater than 0' : null,
     };

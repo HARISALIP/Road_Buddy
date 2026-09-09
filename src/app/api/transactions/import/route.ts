@@ -2,10 +2,16 @@ import { NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/mongodb';
 import Transaction from '@/models/Transaction';
 import Category from '@/models/Category';
+import Partner from '@/models/Partner';
 import Person from '@/models/Person';
 import Vehicle from '@/models/Vehicle';
+import Job from '@/models/Job';
+import Asset from '@/models/Asset';
 import { parseExcelImportBuffer } from '@/lib/excel';
 import { logActivity } from '@/lib/activity';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function POST(req: Request) {
   try {
@@ -59,19 +65,30 @@ export async function POST(req: Request) {
           let categoryId = undefined;
           if (item.lineItem && (item.transactionType === 'expense' || item.transactionType === 'income')) {
             const cat = await Category.findOneAndUpdate(
-              { name: item.lineItem, type: item.transactionType },
+              { name: item.lineItem },
               { name: item.lineItem, type: item.transactionType, status: 'active' },
               { upsert: true, new: true }
             );
             categoryId = cat._id;
           }
 
+          // Partner mapping/creation
+          let partnerId = undefined;
+          if (item.partner) {
+            const p = await Partner.findOneAndUpdate(
+              { name: new RegExp(`^${item.partner.trim()}$`, 'i') },
+              { name: item.partner.trim().toUpperCase(), status: 'active' },
+              { upsert: true, new: true }
+            );
+            partnerId = p._id;
+          }
+
           // Person mapping/creation
           let personId = undefined;
           if (item.person) {
             const p = await Person.findOneAndUpdate(
-              { name: item.person },
-              { name: item.person, status: 'active' },
+              { name: new RegExp(`^${item.person.trim()}$`, 'i') },
+              { name: item.person.trim(), status: 'active' },
               { upsert: true, new: true }
             );
             personId = p._id;
@@ -81,11 +98,33 @@ export async function POST(req: Request) {
           let vehicleId = undefined;
           if (item.vehicle) {
             const v = await Vehicle.findOneAndUpdate(
-              { name: item.vehicle },
-              { name: item.vehicle, status: 'active' },
+              { name: new RegExp(`^${item.vehicle.trim()}$`, 'i') },
+              { name: item.vehicle.trim(), status: 'active' },
               { upsert: true, new: true }
             );
             vehicleId = v._id;
+          }
+
+          // Job mapping/creation
+          let jobId = undefined;
+          if (item.job) {
+            const j = await Job.findOneAndUpdate(
+              { jobNumber: item.job.trim() },
+              { jobNumber: item.job.trim(), customerName: item.job.trim(), status: 'completed' },
+              { upsert: true, new: true }
+            );
+            jobId = j._id;
+          }
+
+          // Asset mapping/creation
+          let assetId = undefined;
+          if (item.asset) {
+            const a = await Asset.findOneAndUpdate(
+              { name: item.asset.trim() },
+              { name: item.asset.trim(), assetType: 'General', purchaseAmount: item.amount, status: 'active' },
+              { upsert: true, new: true }
+            );
+            assetId = a._id;
           }
 
           await Transaction.create({
@@ -93,10 +132,14 @@ export async function POST(req: Request) {
             transactionType: item.transactionType,
             amount: item.amount,
             categoryId,
+            partnerId,
             personId,
             vehicleId,
+            jobId,
+            assetId,
+            invoiceNumber: item.invoiceNumber || '',
+            paymentMethod: item.paymentMethod || 'Cash',
             remarks: item.remarks || '',
-            paymentMethod: 'Cash',
             status: 'active',
           });
 

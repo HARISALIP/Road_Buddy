@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/mongodb';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 import Person from '@/models/Person';
 
 export async function GET() {

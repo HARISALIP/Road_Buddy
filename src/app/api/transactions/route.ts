@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/mongodb';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 import Transaction from '@/models/Transaction';
 import Asset from '@/models/Asset';
 import { logActivity } from '@/lib/activity';
