@@ -3,6 +3,9 @@ import { connectToDatabase } from '@/lib/mongodb';
 import Transaction from '@/models/Transaction';
 import { logActivity } from '@/lib/activity';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET(req: Request, { params }: { params: { id: string } }) {
   try {
     await connectToDatabase();
@@ -64,7 +67,25 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 export async function DELETE(req: Request, { params }: { params: { id: string } }) {
   try {
     await connectToDatabase();
-    // Void instead of permanent delete for financial audit preservation
+    const { searchParams } = new URL(req.url);
+    const isPermanent = searchParams.get('permanent') === 'true';
+
+    if (isPermanent) {
+      const deleted = await Transaction.findByIdAndDelete(params.id);
+      if (!deleted) {
+        return NextResponse.json({ error: 'Transaction not found' }, { status: 404 });
+      }
+
+      await logActivity(
+        'DELETE',
+        'Transaction',
+        `Permanently deleted ${deleted.transactionType} (Amount: ${deleted.amount})`,
+        deleted._id
+      );
+
+      return NextResponse.json({ success: true, message: 'Transaction permanently deleted' });
+    }
+
     const voided = await Transaction.findByIdAndUpdate(params.id, { status: 'void' }, { new: true });
     if (!voided) {
       return NextResponse.json({ error: 'Transaction not found' }, { status: 404 });
@@ -80,6 +101,6 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
     return NextResponse.json({ success: true, transaction: voided });
   } catch (error: unknown) {
     console.error('Delete transaction error:', error);
-    return NextResponse.json({ error: 'Failed to void transaction' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to delete transaction' }, { status: 500 });
   }
 }

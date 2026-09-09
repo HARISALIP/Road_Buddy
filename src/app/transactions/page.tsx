@@ -7,7 +7,7 @@ import Header from '@/components/navigation/Header';
 import FilterBar, { FilterState } from '@/components/transactions/FilterBar';
 import ExcelImportModal from '@/components/transactions/ExcelImportModal';
 import UniversalTransactionForm, { TransactionType } from '@/components/forms/UniversalTransactionForm';
-import { Download, Upload, PlusCircle, Ban, Edit3 } from 'lucide-react';
+import { Download, Upload, PlusCircle, Ban, Edit3, Trash2 } from 'lucide-react';
 
 interface TransactionItem {
   _id: string;
@@ -173,12 +173,26 @@ export default function TransactionsPage() {
     }
   };
 
+  const handleDeletePermanent = async (id: string) => {
+    if (!confirm('Are you sure you want to PERMANENTLY delete this transaction record? It will be completely removed.')) return;
+    try {
+      const res = await fetch(`/api/transactions/${id}?permanent=true`, { method: 'DELETE' });
+      if (res.ok) {
+        fetchTransactions(1);
+      } else {
+        alert('Failed to delete transaction');
+      }
+    } catch {
+      alert('Error deleting transaction');
+    }
+  };
+
   const handleExport = () => {
     window.open('/api/transactions/export', '_blank');
   };
 
   const getTypeBadge = (type: string, isVoid: boolean) => {
-    if (isVoid) return { label: 'VOID', style: 'bg-slate-100 text-slate-400 line-through' };
+    if (isVoid) return { label: 'VOID', style: 'bg-slate-100 text-slate-400 line-through font-semibold' };
     switch (type) {
       case 'income':
         return { label: 'Income', style: 'bg-emerald-50 text-emerald-600 font-bold' };
@@ -323,19 +337,26 @@ export default function TransactionsPage() {
                             <button
                               onClick={() => handleEdit(tx)}
                               className="p-1.5 text-slate-400 hover:text-blue-600 rounded-lg hover:bg-blue-50 transition-colors"
-                              title="Edit"
+                              title="Edit Transaction"
                             >
                               <Edit3 className="w-4 h-4" />
                             </button>
                             {!isVoid && (
                               <button
                                 onClick={() => handleVoid(tx._id)}
-                                className="p-1.5 text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors"
+                                className="p-1.5 text-slate-400 hover:text-amber-600 rounded-lg hover:bg-amber-50 transition-colors"
                                 title="Void Transaction"
                               >
                                 <Ban className="w-4 h-4" />
                               </button>
                             )}
+                            <button
+                              onClick={() => handleDeletePermanent(tx._id)}
+                              className="p-1.5 text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors"
+                              title="Permanently Delete Transaction"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
                           </td>
                         </tr>
                       );
@@ -400,11 +421,20 @@ export default function TransactionsPage() {
                                 e.stopPropagation();
                                 handleVoid(tx._id);
                               }}
-                              className="text-red-500 font-bold"
+                              className="text-amber-600 font-bold"
                             >
                               Void
                             </button>
                           )}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeletePermanent(tx._id);
+                            }}
+                            className="text-red-600 font-bold flex items-center gap-0.5"
+                          >
+                            <Trash2 className="w-3.5 h-3.5 inline" /> Delete
+                          </button>
                         </div>
                       </div>
                     </div>
